@@ -18,7 +18,4 @@ export const loadItems = (text, loading) => (dispatch) => {
             dispatch(itemsLoaded(data.common))
         })
     }
-    // if(loading === 'undefined') {
-    //     dispatch(setLoadingValue(false));
-    // }
 }

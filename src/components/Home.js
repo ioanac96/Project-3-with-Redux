@@ -1,13 +1,13 @@
 import React from 'react';
 import Item from './Item.js'
-import { searchRequest, nutrientsRequest } from './requests';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import { itemsLoaded, loadItems } from '../actions/items.js';
-import { nutrientsLoaded, loadNutrients } from '../actions/nutrients.js';
+import { loadNutrients } from '../actions/nutrients.js';
+import {addUserItem, eraseUserItem } from '../actions/userList.js';
 
 
 
@@ -17,10 +17,6 @@ class Home extends React.Component {
     
     this.state = {
       searchInputValue: '',
-      nutrients: [], 
-      userItems: [],
-      userEnergyKcal: 0,
-      userEnergyKJ: 0,
       showMore: true,
     };
     
@@ -46,37 +42,12 @@ class Home extends React.Component {
     this.props.loadNutrients();
   }
   
-  generateUserList(item, quantity, energyKcal, energyKJ) {
-    return {
-      item: item,
-      quantity: quantity,
-      energyKcal: energyKcal * quantity,
-      energyKJ: energyKJ * quantity 
-    };
-  }
-  
   onAdd(currentItem, energyKcal, energyKJ, quantity) {
-    const item = this.generateUserList(currentItem, quantity, energyKcal, energyKJ);
-    const array = Object.assign([], this.state.userItems);
-    array.push(item);
-    var sumKcal = (((Number.parseFloat(item.energyKcal,10)).toFixed(2))*1 + this.state.userEnergyKcal); 
-    var sumKJ = (Number.parseFloat(item.energyKJ,10) + this.state.userEnergyKJ) ; 
-    this.setState({
-      userItems: array,
-      userEnergyKcal: sumKcal,
-      userEnergyKJ: sumKJ
-    });
+    this.props.addUserItem(currentItem, quantity, energyKcal, energyKJ);
   }
   
-  onClose(clickedIndex, energyKcal, energyKJ) {
-    const newUserItems = this.state.userItems.filter((currentItem, index) => index !==clickedIndex );
-    const newEnergyKcal = this.state.userEnergyKcal - energyKcal;
-    const newEnergyKJ = this.state.userEnergyKJ - energyKJ;
-    this.setState({
-      userItems: newUserItems,
-      userEnergyKcal: newEnergyKcal,
-      userEnergyKJ: newEnergyKJ
-    });
+  onClose(clickedIndex) {
+    this.props.eraseUserItem(clickedIndex);
   }
   
   onClickShowMore() {
@@ -87,9 +58,9 @@ class Home extends React.Component {
   }
   
   render () {
-    console.log('aici', this.props.loading);
-    const {searchInputValue, userEnergyKJ, userEnergyKcal, userItems, showMore} = this.state;
-    const {items, nutrients, loading} = this.props;
+    console.log('aici', this.props.userEnergyKcal);
+    const {searchInputValue,  showMore} = this.state;
+    const {items, nutrients, loading, userItems,userEnergyKJ, userEnergyKcal} = this.props;
     return(
       <div>
         <div className="search-part">
@@ -154,16 +125,24 @@ class Home extends React.Component {
           }
         }
       
-      const mapStateToProps = state => ({      
-        items: state.items.items,
-        loading: state.items.loading,
-        nutrients: state.nutrients
-      }
-      );
+      const mapStateToProps = state => {   
+        console.log('baaaa', state);
+        return {
+          items: state.items.items,
+          loading: state.items.loading,
+          nutrients: state.nutrients,
+          userItems: state.userList.userItems,
+          userEnergyKcal: state.userList.userEnergyKcal,
+          userEnergyKJ: state.userList.userEnergyKJ
+        }   
+        
+      };
       const mapDispatchToProps = (dispatch) => ({
         onSearch: (items) => dispatch(itemsLoaded(items)),
         loadNutrients: () => dispatch(loadNutrients()),
-        loadItems: (text) => dispatch(loadItems(text))
-      });
+        loadItems: (text) => dispatch(loadItems(text)),
+        addUserItem: (item, quantity, energyKcal, energyKJ) => dispatch(addUserItem(item, quantity, energyKcal, energyKJ)),
+        eraseUserItem: (index) => dispatch(eraseUserItem(index))
+       });
       
       export default connect(mapStateToProps, mapDispatchToProps)(Home);
