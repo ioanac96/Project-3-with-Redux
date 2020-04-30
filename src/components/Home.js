@@ -1,5 +1,6 @@
 import React from 'react';
 import Item from './Item.js'
+import Header from './Header.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
@@ -58,11 +59,11 @@ class Home extends React.Component {
   }
   
   render () {
-    console.log('aici', this.props.userEnergyKcal);
     const {searchInputValue,  showMore} = this.state;
     const {items, nutrients, loading, userItems,userEnergyKJ, userEnergyKcal} = this.props;
     return(
       <div>
+        <Header path={this.props.match.path} />
         <div className="search-part">
           <button onClick={this.onSearch}>Search</button>
           <input value={searchInputValue} onChange={this.onChangeSearch} />
@@ -125,18 +126,15 @@ class Home extends React.Component {
           }
         }
       
-      const mapStateToProps = state => {   
-        console.log('baaaa', state);
-        return {
+      const mapStateToProps = state => ({
           items: state.items.items,
           loading: state.items.loading,
           nutrients: state.nutrients,
           userItems: state.userList.userItems,
           userEnergyKcal: state.userList.userEnergyKcal,
           userEnergyKJ: state.userList.userEnergyKJ
-        }   
+        });   
         
-      };
       const mapDispatchToProps = (dispatch) => ({
         onSearch: (items) => dispatch(itemsLoaded(items)),
         loadNutrients: () => dispatch(loadNutrients()),
