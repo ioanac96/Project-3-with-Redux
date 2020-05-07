@@ -104,7 +104,7 @@ class MyProfile extends React.Component {
 
     render() {
         const {weight, height, age, gender, BMR, userWish, calories, message} = this.props.myProfileItems.userChoices;
-        console.log(this.props.myProfileItems.userChoices);
+        // console.log("here:",this.props);
         return (
             <div>
                 <Header path={this.props.match.path}/>

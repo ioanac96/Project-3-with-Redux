@@ -8,7 +8,10 @@ import { faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import { itemsLoaded, loadItems } from '../actions/items.js';
 import { loadNutrients } from '../actions/nutrients.js';
+import { changeDate } from '../actions/date.js';
 import {addUserItem, eraseUserItem } from '../actions/userList.js';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 
 
@@ -18,7 +21,7 @@ class Home extends React.Component {
     
     this.state = {
       searchInputValue: '',
-      showMore: true,
+      showMore: true
     };
     
     this.onChangeSearch = this.onChangeSearch.bind(this);
@@ -26,13 +29,18 @@ class Home extends React.Component {
     this.onAdd = this.onAdd.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onClickShowMore = this.onClickShowMore.bind(this);
+    this.onChangeDate = this.onChangeDate.bind(this);
   }
   
   onChangeSearch(event) {
     this.setState({
       searchInputValue: event.target.value
-    });
-    
+    });  
+  }
+
+
+  onChangeDate(date) {
+    this.props.onChangeDate(date);
   }
   
   onSearch() {
@@ -60,10 +68,14 @@ class Home extends React.Component {
   
   render () {
     const {searchInputValue,  showMore} = this.state;
-    const {items, nutrients, loading, userItems,userEnergyKJ, userEnergyKcal} = this.props;
+    const {items, nutrients, loading, userItems,userEnergyKJ, userEnergyKcal, currentDay} = this.props;
+     console.log("here:",this.props);
     return(
       <div>
         <Header path={this.props.match.path} />
+        <div>
+          <DatePicker onChange={this.onChangeDate} selected={new Date(currentDay)} showYearDropdown />
+        </div>
         <div className="search-part">
           <button onClick={this.onSearch}>Search</button>
           <input value={searchInputValue} onChange={this.onChangeSearch} />
@@ -126,21 +138,28 @@ class Home extends React.Component {
           }
         }
       
-      const mapStateToProps = state => ({
+      const mapStateToProps = state => {
+        console.log(state.userList);
+        const day = state.userList.days.find(day => day.date === state.userList.currentDay) || {};
+        return {
           items: state.items.items,
           loading: state.items.loading,
           nutrients: state.nutrients,
-          userItems: state.userList.userItems,
-          userEnergyKcal: state.userList.userEnergyKcal,
-          userEnergyKJ: state.userList.userEnergyKJ
-        });   
+          // userItems: state.userList.userItems,
+          userEnergyKcal: day.userEnergyKcal,
+          userEnergyKJ: day.userEnergyKJ,
+          currentDay: state.userList.currentDay,
+          userItems: day.userItems
+        };
+      }
         
       const mapDispatchToProps = (dispatch) => ({
         onSearch: (items) => dispatch(itemsLoaded(items)),
         loadNutrients: () => dispatch(loadNutrients()),
         loadItems: (text) => dispatch(loadItems(text)),
         addUserItem: (item, quantity, energyKcal, energyKJ) => dispatch(addUserItem(item, quantity, energyKcal, energyKJ)),
-        eraseUserItem: (index) => dispatch(eraseUserItem(index))
+        eraseUserItem: (index) => dispatch(eraseUserItem(index)),
+        onChangeDate: (date) => dispatch(changeDate(date))
        });
       
       export default connect(mapStateToProps, mapDispatchToProps)(Home);
