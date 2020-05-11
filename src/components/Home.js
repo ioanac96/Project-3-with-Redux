@@ -73,8 +73,8 @@ class Home extends React.Component {
     return(
       <div>
         <Header path={this.props.match.path} />
-        <div>
-          <DatePicker onChange={this.onChangeDate} selected={new Date(currentDay)} showYearDropdown />
+        <div className="date-picker">
+          <DatePicker className="date" classNamePrefix="date-prefix" onChange={this.onChangeDate} selected={new Date(currentDay)}  />
         </div>
         <div className="search-part">
           <button onClick={this.onSearch}>Search</button>

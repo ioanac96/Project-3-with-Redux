@@ -21,14 +21,7 @@ const initialState = {
             userEnergyKJ: 0
         }
     ],
-    // {
-    //     date: '',
-    //     userItems: [],
-    //     userEnergyKcal: 0,
-    //     userEnergyKJ: 0
-    // }
     currentDay: convertDateToString(new Date()),
-    // userItems: [],
     userEnergyKcal: 0,
     userEnergyKJ: 0
 };
@@ -51,12 +44,31 @@ const userList =(state = initialState, action) => {
                 }
                 return current;
             });
-            console.log(newDays);
             return {
                 ...state,
                 days: newDays
             };
         case 'ERASE_USER_ITEM':
+
+            const newDaysList = state.days.map((current) => {
+                if(current.date === state.currentDay) {
+                    const foundItem = current.userItems.find((item,index) => index === action.index);
+                    const foundEnergyKcal = foundItem.energyKcal;
+                    const foundEnergyKJ = foundItem.energyKJ; 
+                    const newList = current.userItems.filter((currentItem, index) => index !== action.index);
+                    return {
+                        ...current,
+                        userItems: newList,
+                        userEnergyKcal: current.userEnergyKcal - foundEnergyKcal,
+                        userEnergyKJ: current.userEnergyKJ - foundEnergyKJ
+                    };
+                }
+                return current;
+            });
+            return {
+                ...state,
+                days: newDaysList
+            }
             const newList = state.userItems.filter((currentItem, index) => index !== action.index);
             return {
                 ...state,

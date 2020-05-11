@@ -85,6 +85,55 @@
         }
     }
 
+    .date-picker {
+        display: flex;
+        justify-content: center;
+
+        .date {
+            margin-right: 284px;
+            margin-top: 5px;
+            color: @main-blue;
+            font-weight: bold;
+            border: 1px solid @main-blue;
+            font-size: 12px;
+            padding: 5px;
+
+            &:focus {
+                outline-color: @main-blue;
+            }
+        }
+
+        .react-datepicker__header {
+            color: white;
+            background-color: @main-blue;
+        }
+
+        .react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header {
+            color: white;
+        }
+
+        .react-datepicker__day-name {
+            color: white;
+        }
+
+        .react-datepicker__navigation {
+            color: white;
+
+            &:focus {
+                outline-color: @second-bright-color;
+            }
+        } 
+
+        .react-datepicker__day--selected {
+            background-color: @main-blue;
+        }
+
+        .react-datepicker__day:hover, .react-datepicker__month-text:hover, .react-datepicker__quarter-text:hover {
+            background-color: @second-bright-color;
+        }
+        
+    }
+
     .outside {
         display: flex;
         justify-content: center;
