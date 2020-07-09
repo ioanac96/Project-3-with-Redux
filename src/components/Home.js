@@ -21,7 +21,8 @@ class Home extends React.Component {
     
     this.state = {
       searchInputValue: '',
-      showMore: true
+      showMore: true,
+      wantedDay: 'current'
     };
     
     this.onChangeSearch = this.onChangeSearch.bind(this);
@@ -40,6 +41,7 @@ class Home extends React.Component {
 
 
   onChangeDate(date) {
+    console.log(date);
     this.props.onChangeDate(date);
   }
   
@@ -67,14 +69,22 @@ class Home extends React.Component {
   }
   
   render () {
-    const {searchInputValue,  showMore} = this.state;
+    const {searchInputValue,  showMore, wantedDay} = this.state;
     const {items, nutrients, loading, userItems,userEnergyKJ, userEnergyKcal, currentDay} = this.props;
-     console.log("here:",this.props);
+    const previousDay = new Date(Date.parse(currentDay) - 24*60*60*1000);
+    const nextDay = new Date(Date.parse(currentDay) + 24*60*60*1000);
+    console.log("previous:",previousDay);
+    // console.log("current:",currentDay);
+    console.log("next:",nextDay);
+    const itemsToShow = (showMore) ? userItems.length : 3;
+    
     return(
       <div>
         <Header path={this.props.match.path} />
         <div className="date-picker">
+          <button onClick={() => this.onChangeDate(previousDay)}>&#x21E0;</button>
           <DatePicker className="date" classNamePrefix="date-prefix" onChange={this.onChangeDate} selected={new Date(currentDay)}  />
+          <button onClick={() => this.onChangeDate(nextDay)}>&#x21E2;</button>
         </div>
         <div className="search-part">
           <button onClick={this.onSearch}>Search</button>
@@ -99,9 +109,9 @@ class Home extends React.Component {
             <div className="user-energy">You consumed {userEnergyKcal} Kcal/{userEnergyKJ} kJ today!</div>
             <div className="user-list">
             {
-              userItems.map((currentItem, index) => {
+              userItems.slice(0,itemsToShow).map((currentItem, index) => {
                 return (
-                  <div className={(showMore)? "items-list": "items-list collapsed"}>
+                  <div className="items-list">
                   <div className="item">	
                   <div className="delete-item">
                   <FontAwesomeIcon icon={faTimesCircle} onClick={() => {this.onClose(index, currentItem.energyKcal, currentItem.energyKJ)}} />
@@ -113,12 +123,23 @@ class Home extends React.Component {
                 })
               }
               <div className="show-part">
-              <button id="toggle" onClick={this.onClickShowMore}>{
-                (showMore) ?
-                <div>Show less <FontAwesomeIcon icon={faAngleUp} /> </div>:
-                <div>Show more <FontAwesomeIcon icon={faAngleDown} /> </div>
+              {
+                (userItems.length > 3 && showMore === false) ?
+                <div>
+                  <button id="toggle" onClick={this.onClickShowMore}>
+                    <div>Show more <FontAwesomeIcon icon={faAngleDown} /> </div>
+                  </button>
+                </div>: null
               }
-              </button>
+              {
+                (userItems.length > 3 && showMore === true) ?
+                  <div>
+                    <button id="toggle" onClick={this.onClickShowMore}>
+                      <div>Show less <FontAwesomeIcon icon={faAngleUp} /> </div>
+                    </button>
+                  </div>: null
+              }
+            
               </div>
               </div>
               </div> : null

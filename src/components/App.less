@@ -60,6 +60,8 @@
             color: @bright-color;
             cursor: pointer;
             font-weight: bold;
+            border-color: @main-blue;
+            border-style: none;
     
             &:hover {
                 background-color: @secondary-blue;
@@ -88,9 +90,35 @@
     .date-picker {
         display: flex;
         justify-content: center;
+        margin-right: 225px;
+
+        button {
+            margin-right: 5px;
+            margin-left: 5px;
+            padding: 2px 2px;
+            font-size: 18px;
+            margin-top: 5px;
+            border-radius: 4px;
+            background-color: @bright-color;
+            color: @main-blue;
+            cursor: pointer;
+            font-weight: bold;
+            border-style: none;
+    
+            &:hover {
+                color: @bright-color;
+                outline-color: @main-blue;
+                background-color: @main-blue;
+            }
+    
+            &:focus {
+                color: @bright-color;
+                outline-color: @main-blue;
+                background-color: @main-blue;
+            }
+        }
 
         .date {
-            margin-right: 284px;
             margin-top: 5px;
             color: @main-blue;
             font-weight: bold;
@@ -212,6 +240,8 @@
                 cursor: pointer;
                 font-weight: bold;
                 margin: 5px;
+                border-style: none;
+                border-color: @main-blue;
         
                 &:hover {
                     background-color: @secondary-blue;
