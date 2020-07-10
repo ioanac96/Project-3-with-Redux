@@ -73,9 +73,6 @@ class Home extends React.Component {
     const {items, nutrients, loading, userItems,userEnergyKJ, userEnergyKcal, currentDay} = this.props;
     const previousDay = new Date(Date.parse(currentDay) - 24*60*60*1000);
     const nextDay = new Date(Date.parse(currentDay) + 24*60*60*1000);
-    console.log("previous:",previousDay);
-    // console.log("current:",currentDay);
-    console.log("next:",nextDay);
     const itemsToShow = (showMore) ? userItems.length : 3;
     
     return(
@@ -160,7 +157,7 @@ class Home extends React.Component {
         }
       
       const mapStateToProps = state => {
-        console.log(state.userList);
+
         const day = state.userList.days.find(day => day.date === state.userList.currentDay) || {};
         return {
           items: state.items.items,
