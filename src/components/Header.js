@@ -6,7 +6,6 @@ import {
 class Header extends React.Component {
     render() {
         const isON = this.props.path; 
-        console.log(this.props.path)
         return(
             <div className="header">
                 <div className="header-title">In love with food</div>

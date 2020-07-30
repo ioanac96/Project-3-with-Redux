@@ -2,6 +2,9 @@ import React from 'react';
 import Header from './Header.js';
 import './Upload.less';
 import Dropzone from 'react-dropzone';
+import { faTimesCircle, faTimes, faAngleDoubleDown } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 
 class Upload extends React.Component {
@@ -16,6 +19,8 @@ class Upload extends React.Component {
         this.readFiles = this.readFiles.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.getFile = this.getFile.bind(this);
+        this.handleOnCloseSingleFile = this.handleOnCloseSingleFile.bind(this);
+        this.handleOnCloseAll = this.handleOnCloseAll.bind(this);
     }
 
     
@@ -31,21 +36,21 @@ class Upload extends React.Component {
         })
     }
 
-    handleChange(event) {
-        const handlePromise = new Promise((resolve, reject) => {
-            const modifiedFile = event.target.value;
-            resolve(modifiedFile);
-        });
-        handlePromise.then((modifiedValue) =>{
-            this.setState({
-                filesArray: [
-                    ...this.state.filesArray,
-                    modifiedValue
-                ]
-            });
-            console.log("hereIam",modifiedValue);
-        })
+    handleChange(index) {
+        return (event) => {
         
+            const newFilesArray = this.state.filesArray.map((file, fileIndex) => {
+                if(fileIndex === index) return event.target.value;
+                else return file;
+            });
+
+            console.log("Array",newFilesArray);
+
+            this.setState({
+                filesArray: newFilesArray
+            });
+            console.log("Index is:", index);
+        }
     }
 
     getFile(file) {
@@ -61,6 +66,29 @@ class Upload extends React.Component {
         })
     }
 
+    handleOnCloseSingleFile(index) {
+        const newFilesArray = this.state.filesArray.filter((file,fileIndex) => fileIndex !== index);
+        this.setState({
+            filesArray: newFilesArray
+        });
+    }
+
+    handleOnCloseAll() {
+        this.setState({
+            filesArray: []
+        });
+    }
+
+    downloadFile(filename, text) {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);     
+    }
+
 
     render() {
         const {file, filesArray} = this.state;
@@ -69,21 +97,36 @@ class Upload extends React.Component {
                 <Header path={this.props.match.path} />
                 <div className="main-area">
                     <Dropzone onDrop={acceptedFiles => {
-                        console.log("lala",acceptedFiles);
                         this.readFiles(acceptedFiles);
                         
                     }}>
                         {({getRootProps, getInputProps}) => (
                         <section>
-                        <div {...getRootProps()}>
+                        <div className="dropzone-section" {...getRootProps()} >
                             <input {...getInputProps()} />
                             <p>Drag 'n' drop some files here, or click to select files</p>
                         </div>
                         </section>
                         )}
                     </Dropzone>
+                    <div className="files-area">
                     {
-                        filesArray.map ((file) => (<textarea value={file} onChange={this.handleChange} />) )
+                        filesArray.map ((file,index) => (
+                        <div className="file-area">
+                            <textarea value={file} onChange={this.handleChange(index)} />
+                            <div className="icons-area">
+                                <FontAwesomeIcon className="icon" icon={faTimesCircle} onClick={() => {this.handleOnCloseSingleFile(index)}}/>
+                                <FontAwesomeIcon className="icon" icon={faAngleDoubleDown} onClick={() => {this.downloadFile(index,file)}}/>
+                            </div>
+                        </div>))
+                    }
+                    </div>
+                    {
+                        (filesArray.length != 0) ? (filesArray.length > 1) ? 
+                        <div className="close-all-section">
+                            <div className="close-all">Close all</div>
+                            <FontAwesomeIcon className="close-icon" icon={faTimes} onClick={() => {this.handleOnCloseAll()}} />
+                        </div> : null : null
                     }
                     
                 </div>

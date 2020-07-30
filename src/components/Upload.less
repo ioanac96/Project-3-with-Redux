@@ -1,1 +1,77 @@
 @import "./variables.less";
+
+
+.main-area {
+    .dropzone-section {
+        display: flex;
+        width: 398px;
+        margin:4px 0px 2px 6px;
+        padding: 10px;
+        color: @main-blue;
+        font-weight: bold;
+        border: 1px solid @main-blue;
+    
+        &:focus {
+            outline-color: @main-blue;
+        }
+    }
+    
+    .files-area {
+        display: flex;
+        flex-wrap: wrap;
+    
+        .file-area {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 6px;
+    
+            textarea {
+                background-color: @bright-color;
+                color: @main-blue;
+                width: 200px;
+                height: 54px;
+                padding: 7px;
+                border-color: @main-blue;
+    
+                &:focus {
+                    outline-color: @main-blue;
+                }
+            }
+    
+            .icons-area {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding-left: 4px;
+    
+                .icon {
+                    color: @main-blue;
+                }
+            }  
+        }
+    }
+
+    .close-all-section {
+        display: flex;
+        color: @bright-color;
+        background-color: @secondary-blue; 
+        width: 95px;
+        height: 20px;
+        margin-left: 7px;  
+
+        .close-all {
+            margin-right: 8px;
+            margin-left: 6px;
+            font-weight: bold;
+        }
+
+        .close-icon {
+            margin-top: 1px;
+
+            &:hover {
+                color: @second-bright-color;
+            }
+        }
+    }
+
+}
